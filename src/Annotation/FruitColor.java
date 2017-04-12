@@ -7,6 +7,7 @@ import java.lang.annotation.Target;
 
 /**
  * Created by fanwei on 2017/3/29.
+ * 水果颜色注解
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
