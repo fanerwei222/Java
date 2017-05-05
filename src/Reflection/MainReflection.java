@@ -3,7 +3,9 @@ package Reflection;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 
 /**
  * Created by fanwei on 2017/5/5.
@@ -12,11 +14,12 @@ public class MainReflection implements InterReflection, Serializable {
     private String hello;
     public String good;
     String yes;
+    String proprety;
 
     public static void main(String[] args) throws Exception{
         MainReflection mainReflection = new MainReflection();
         System.out.println(mainReflection.getClass().getName());
-
+        System.out.println("--------------------------------------------------");
         /**
          * 获取一个类
          */
@@ -29,6 +32,7 @@ public class MainReflection implements InterReflection, Serializable {
         user.setName("fanwei");
         user.setAge(18);
         System.out.println("用户：" + user);
+        System.out.println("--------------------------------------------------");
         /**
          * 获取一个类的所有构造方法
          */
@@ -63,7 +67,7 @@ public class MainReflection implements InterReflection, Serializable {
         System.out.println(user);
         user = (User) userConstructor[1].newInstance("fanwei");
         System.out.println(user);
-
+        System.out.println("--------------------------------------------------");
         /**
          * 获取一个类的父类
          */
@@ -79,7 +83,7 @@ public class MainReflection implements InterReflection, Serializable {
         {
             System.out.println("clazz 实现接口: " + imple[i].getName());
         }
-        System.out.println("-------------------------");
+        System.out.println("--------------------------------------------------");
         /**
          * 获取本类的所有属性
          */
@@ -108,6 +112,87 @@ public class MainReflection implements InterReflection, Serializable {
             System.out.println("获取父类或者接口的所有属性");
             System.out.println(priv + " " + type.getName() + " " + fields[j].getName() + ";");
         }
-        System.out.println("-------------------------");
+        System.out.println("--------------------------------------------------");
+
+        /**
+         * 获取一个类所有的方法
+         */
+        Method[] methods = clazz.getMethods();
+        for (int i = 0; i < methods.length; ++i) {
+            Class<?> returnType = methods[i].getReturnType();
+            Class<?> para[] = methods[i].getParameterTypes();
+            int temp = methods[i].getModifiers();
+            System.out.print(Modifier.toString(temp) + " ");
+            System.out.print(returnType.getName() + "  ");
+            System.out.print(methods[i].getName() + " ");
+            System.out.print("(");
+            for (int j = 0; j < para.length; ++j) {
+                System.out.print(para[j].getName() + " " + "arg" + j);
+                if (j < para.length - 1) {
+                    System.out.print(",");
+                }
+            }
+            Class<?> exce[] = methods[i].getExceptionTypes();
+            if (exce.length > 0) {
+                System.out.print(") throws ");
+                for (int k = 0; k < exce.length; ++k) {
+                    System.out.print(exce[k].getName() + " ");
+                    if (k < exce.length - 1) {
+                        System.out.print(",");
+                    }
+                }
+            } else {
+                System.out.print(")");
+            }
+            System.out.println();
+        }
+        System.out.println("--------------------------------------------------");
+        /**
+         * 调用某个类的方法
+         */
+        //调用clazz中的reflect1方法
+        Method method = clazz.getMethod("reflect1");
+        method.invoke(clazz.newInstance());
+        //调用clazz中的reflect2方法
+        method = clazz.getMethod("reflect2", int.class, String.class);
+        method.invoke(clazz.newInstance(), 18, "fanwei");
+        System.out.println("--------------------------------------------------");
+        /**
+         * 操作某个类的属性
+         */
+        Object obj = clazz.newInstance();
+        Field field = clazz.getDeclaredField("proprety");
+        field.setAccessible(true);
+        field.set(obj, "java反射");
+        System.out.println(field.get(obj));
+        System.out.println("--------------------------------------------------");
+        /**
+         * 在泛型为Integer的ArrayList中存放一个String类型的对象
+         */
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        Method method1 = list.getClass().getMethod("add", Object.class);
+        method1.invoke(list, "java 反射nteger的ArrayList中存放一个String类型的对象");
+        System.out.println(list.get(0));
+        System.out.println("--------------------------------------------------");
+        System.out.println("--------------------------------------------------");
+        System.out.println("--------------------------------------------------");
+        System.out.println("--------------------------------------------------");
+        System.out.println("--------------------------------------------------");
+        System.out.println("--------------------------------------------------");
+        System.out.println("--------------------------------------------------");
+        System.out.println("--------------------------------------------------");
+        System.out.println("--------------------------------------------------");
+        System.out.println("--------------------------------------------------");
+    }
+
+    /**
+     * 以下两个是测试方法
+     */
+    public void reflect1() {
+        System.out.println("Java 反射机制 - 调用某个类的方法1.");
+    }
+    public void reflect2(int age, String name) {
+        System.out.println("Java 反射机制 - 调用某个类的方法2.");
+        System.out.println("age -> " + age + ". name -> " + name);
     }
 }
